@@ -34,7 +34,7 @@ const certdir = "certs"
 const testporthttp = ":9050"
 const testporthttps = ":9051"
 
-const invalidFileName = "**" + string(0x0)
+const invalidFileName = "**\x00"
 
 func TestMain(m *testing.M) {
 	flag.Parse()

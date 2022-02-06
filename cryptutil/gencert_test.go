@@ -23,7 +23,7 @@ import (
 
 const certDir = "certs"
 
-const invalidFileName = "**" + string(0x0)
+const invalidFileName = "**\x00"
 
 func TestMain(m *testing.M) {
 	flag.Parse()

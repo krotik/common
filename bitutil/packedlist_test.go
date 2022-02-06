@@ -227,7 +227,7 @@ func TestSmallListPacking(t *testing.T) {
 
 	// Simulates a gob encoded string
 
-	if string(UnpackSmallList(string([]byte{0x00}))) != string(0x00) {
+	if string(UnpackSmallList(string([]byte{0x00}))) != string([]byte{0x00}) {
 		t.Error("Unexpected result")
 		return
 	}

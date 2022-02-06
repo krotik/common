@@ -17,7 +17,7 @@ import (
 	"time"
 )
 
-const InvalidFileName = "**" + string(0x0)
+const InvalidFileName = "**\x00"
 
 var testDefaultConfig = map[string]interface{}{
 	"MemoryOnlyStorage": false,
@@ -99,10 +99,10 @@ func TestLoadingConfig(t *testing.T) {
 
 	// Check invalid config file
 
-	configFile = "**" + string(0x0)
+	configFile = "**\x00"
 
 	_, err = LoadConfig(configFile, testDefaultConfig)
-	if !strings.Contains(strings.ToLower(err.Error()), string(0)+": invalid argument") {
+	if !strings.Contains(strings.ToLower(err.Error()), "\x00: invalid argument") {
 		t.Error(err)
 		return
 	}
@@ -178,19 +178,19 @@ func TestPersistedConfig(t *testing.T) {
 	time.Sleep(10 * time.Millisecond)
 
 	_, _, err = pt.GetValue("MemoryOnlyStorage")
-	if err == nil || err.Error() != "Could not sync config from disk: open **"+string(0)+": invalid argument" {
+	if err == nil || err.Error() != "Could not sync config from disk: open **\x00: invalid argument" {
 		t.Error("Unexpected stored value:", err)
 		return
 	}
 
 	_, err = pt.GetConfig()
-	if err == nil || err.Error() != "Could not sync config from disk: open **"+string(0)+": invalid argument" {
+	if err == nil || err.Error() != "Could not sync config from disk: open **\x00: invalid argument" {
 		t.Error("Unexpected stored value:", err)
 		return
 	}
 
 	err = pt.Close()
-	if err == nil || err.Error() != "Could not sync config from disk: open **"+string(0)+": invalid argument" {
+	if err == nil || err.Error() != "Could not sync config from disk: open **\x00: invalid argument" {
 		t.Error("Unexpected stored value:", err)
 		return
 	}

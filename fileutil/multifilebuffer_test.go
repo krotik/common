@@ -21,7 +21,7 @@ const BUFTESTPATH = "filebuftestpath"
 
 func TestMultiFileBufferErrors(t *testing.T) {
 
-	buf, err := NewMultiFileBuffer("**"+string(0x0),
+	buf, err := NewMultiFileBuffer("**\x00",
 		ConsecutiveNumberIterator(5), EmptyRolloverCondition())
 
 	if buf != nil || err == nil {

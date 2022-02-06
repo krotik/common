@@ -18,7 +18,7 @@ import (
 	"testing"
 )
 
-const InvalidFileName = "**" + string(0x0)
+const InvalidFileName = "**\x00"
 
 /*
 dummyResponse is a dummy object for http response testing
