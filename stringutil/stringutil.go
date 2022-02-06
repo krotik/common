@@ -636,6 +636,22 @@ func GenerateRollingString(seq string, size int) string {
 	return buf.String()
 }
 
+var quoteCLIPattern = regexp.MustCompile(`[^\w@%+=:,./-]`)
+
+func QuoteCLIArgs(args []string) string {
+	l := make([]string, len(args))
+
+	for i, a := range args {
+		if quoteCLIPattern.MatchString(a) {
+			l[i] = "'" + strings.ReplaceAll(a, "'", "'\"'\"'") + "'"
+		} else {
+			l[i] = a
+		}
+	}
+
+	return strings.Join(l, " ")
+}
+
 /*
 ConvertToString tries to convert a given object into a stable string. This
 function can be used to display nested maps.

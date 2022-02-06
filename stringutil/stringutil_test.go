@@ -315,6 +315,24 @@ func TestGenerateRollingString(t *testing.T) {
 	}
 }
 
+func TestQuoteCLIArgs(t *testing.T) {
+
+	if res := QuoteCLIArgs([]string{"-i"}); res != "-i" {
+		t.Error("Unexpected result:", res)
+		return
+	}
+
+	if res := QuoteCLIArgs([]string{"-i test"}); res != "'-i test'" {
+		t.Error("Unexpected result:", res)
+		return
+	}
+
+	if res := QuoteCLIArgs([]string{"-i", "--TEST&test"}); res != "-i '--TEST&test'" {
+		t.Error("Unexpected result:", res)
+		return
+	}
+}
+
 func TestConvertToString(t *testing.T) {
 
 	if res := ConvertToString(""); res != "" {
