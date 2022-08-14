@@ -94,6 +94,10 @@ const (
 	// characters so escape sequences must be used to represent these characters.
 
 	TokenStringValue
+
+	// General token used for plain ASTs
+
+	TokenGeneral
 )
 
 /*

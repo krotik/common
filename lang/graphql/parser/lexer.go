@@ -385,6 +385,12 @@ func (l *lexer) lexStringValue() lexFunc {
 		if r == RuneEOF {
 			l.emitToken(TokenError, "EOF inside quotes")
 			return nil
+		} else if r == '\\' {
+
+			// Consume escaped characters
+
+			r = l.next(-1)
+			r = l.next(-1)
 		}
 	}
 

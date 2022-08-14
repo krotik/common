@@ -31,6 +31,63 @@ type ASTNode struct {
 }
 
 /*
+ASTFromPlain creates an AST from a plain AST.
+A plain AST is a nested map structure like this:
+
+	{
+		name     : <name of node>
+		value    : <value of node>
+		children : [ <child nodes> ]
+	}
+*/
+func ASTFromPlain(plainAST map[string]interface{}) (*ASTNode, error) {
+	var astChildren []*ASTNode
+
+	nameValue, ok := plainAST["name"]
+	if !ok {
+		return nil, fmt.Errorf("Found plain ast node without a name: %v", plainAST)
+	}
+	name := fmt.Sprint(nameValue)
+
+	valueValue, ok := plainAST["value"]
+	if stringutil.IndexOf(name, ValueNodes) != -1 && !ok {
+		return nil, fmt.Errorf("Found plain ast value node without a value: %v", name)
+	}
+	value := fmt.Sprint(valueValue)
+
+	// Create children
+
+	if children, ok := plainAST["children"]; ok {
+
+		if ic, ok := children.([]interface{}); ok {
+
+			// Do a list conversion if necessary - this is necessary when we parse
+			// JSON with map[string]interface{} this
+
+			childrenList := make([]map[string]interface{}, len(ic))
+			for i := range ic {
+				childrenList[i] = ic[i].(map[string]interface{})
+			}
+
+			children = childrenList
+		}
+
+		for _, child := range children.([]map[string]interface{}) {
+
+			astChild, err := ASTFromPlain(child)
+			if err != nil {
+				return nil, err
+			}
+
+			astChildren = append(astChildren, astChild)
+		}
+	}
+
+	return &ASTNode{fmt.Sprint(name), &LexToken{TokenGeneral, 0,
+		fmt.Sprint(value), 0, 0}, astChildren, nil, 0, nil, nil}, nil
+}
+
+/*
 newAstNode creates an instance of this ASTNode which is connected to a concrete lexer token.
 */
 func newAstNode(name string, p *parser, t *LexToken) *ASTNode {
